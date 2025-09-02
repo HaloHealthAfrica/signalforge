@@ -11,6 +11,26 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    service: 'TradeLoop API',
+    version: '1.0.0',
+    status: 'running',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: '/health',
+      api_status: '/api/status',
+      market_data: '/api/market/overview',
+      signals: '/api/signals',
+      portfolio: '/api/portfolio/positions',
+      backtest: '/api/backtest/run',
+      settings: '/api/settings'
+    },
+    docs: 'Visit /health for service health check'
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ 
