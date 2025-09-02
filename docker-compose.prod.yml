@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: tradeloop-postgres-prod
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tradeloop}
+      POSTGRES_USER: ${POSTGRES_USER:-tradeloop}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tradeloop123}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+      - ./prisma/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tradeloop} -d ${POSTGRES_DB:-tradeloop}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - tradeloop-network
+
+  tradeloop-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: production
+    container_name: tradeloop-backend-prod
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-tradeloop}:${POSTGRES_PASSWORD:-tradeloop123}@postgres:5432/${POSTGRES_DB:-tradeloop}
+      NODE_ENV: production
+      PORT: ${BACKEND_PORT:-3000}
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key}
+      API_KEY: ${API_KEY:-your-api-key}
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - tradeloop-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  tradeloop-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: production
+    container_name: tradeloop-frontend-prod
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
+      VITE_APP_NAME: ${VITE_APP_NAME:-TradeLoop}
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    depends_on:
+      - tradeloop-backend
+    restart: unless-stopped
+    networks:
+      - tradeloop-network
+
+  # Optional: Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    container_name: tradeloop-redis-prod
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data_prod:/data
+    restart: unless-stopped
+    networks:
+      - tradeloop-network
+    command: redis-server --appendonly yes
+
+volumes:
+  postgres_data_prod:
+  redis_data_prod:
+
+networks:
+  tradeloop-network:
+    driver: bridge

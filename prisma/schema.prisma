@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TradeSignal {
+  id          String   @id @default(cuid())
+  symbol      String
+  timestamp   DateTime
+  signalType  SignalType
+  direction   Direction
+  price       Float
+  quantity    Int
+  stopLoss    Float?
+  takeProfit  Float?
+  
+  // Technical indicators
+  atr         Float?
+  ema20       Float?
+  ema50       Float?
+  vwap        Float?
+  
+  // Enrichment flags
+  isEnriched  Boolean  @default(false)
+  enrichedAt  DateTime?
+  
+  // Confluence scoring
+  confluenceScore Float
+  reasonCodes     String[] // Array of reason codes
+  
+  // Risk management
+  riskRewardRatio Float?
+  maxRisk         Float?
+  
+  // Trade execution
+  orderId         String?
+  executedAt      DateTime?
+  executedPrice   Float?
+  executedQuantity Int?
+  
+  // Outcome tracking
+  outcome         Outcome?
+  pnl             Float?
+  closedAt        DateTime?
+  
+  // Metadata
+  mode            TradingMode
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([symbol, timestamp])
+  @@index([outcome])
+  @@index([isEnriched])
+}
+
+enum SignalType {
+  BREAKOUT
+  PULLBACK
+  REVERSAL
+  CONTINUATION
+}
+
+enum Direction {
+  LONG
+  SHORT
+}
+
+enum Outcome {
+  WIN
+  LOSS
+  BREAKEVEN
+  OPEN
+}
+
+enum TradingMode {
+  BACKTEST
+  LIVE
+  PAPER
+}

@@ -1,0 +1,284 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    --gradient-success: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+    --gradient-danger: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  }
+
+  * {
+    @apply border-dark-600;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-slate-900 text-white antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    background: var(--gradient-bg);
+    min-height: 100vh;
+  }
+  
+  /* Enhanced scrollbar with glassmorphism */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.6) 0%, rgba(29, 78, 216, 0.8) 100%);
+    @apply rounded-full backdrop-blur-sm;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.8) 0%, rgba(29, 78, 216, 1) 100%);
+  }
+
+  /* Selection styles */
+  ::selection {
+    @apply bg-blue-500/30 text-white;
+  }
+}
+
+@layer components {
+  /* Glassmorphism Base */
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-card {
+    @apply glass rounded-2xl p-6 shadow-glass relative overflow-hidden;
+  }
+
+  .glass-card::before {
+    content: '';
+    @apply absolute inset-0 rounded-2xl;
+    background: var(--gradient-glass);
+    opacity: 0.5;
+    z-index: -1;
+  }
+
+  /* Enhanced Trading Components */
+  .trading-card {
+    @apply glass-card border-slate-700/50 shadow-depth-2 hover:shadow-depth-3 transition-all duration-300;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
+  }
+  
+  .trading-card:hover {
+    @apply border-blue-500/30;
+    transform: translateY(-2px);
+  }
+  
+  .trading-button {
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 relative overflow-hidden;
+    position: relative;
+  }
+
+  .trading-button::before {
+    content: '';
+    @apply absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+  }
+
+  .trading-button:hover::before {
+    @apply opacity-100;
+  }
+  
+  .trading-button-primary {
+    background: var(--gradient-primary);
+    @apply trading-button text-white shadow-depth-2 hover:shadow-glow-primary focus:ring-blue-500;
+  }
+
+  .trading-button-primary:hover {
+    transform: translateY(-1px);
+    @apply shadow-depth-3;
+  }
+  
+  .trading-button-success {
+    background: var(--gradient-success);
+    @apply trading-button text-white shadow-depth-2 hover:shadow-glow-success focus:ring-green-500;
+  }
+  
+  .trading-button-danger {
+    background: var(--gradient-danger);
+    @apply trading-button text-white shadow-depth-2 hover:shadow-glow-danger focus:ring-red-500;
+  }
+  
+  .trading-button-secondary {
+    @apply trading-button glass text-white hover:bg-white/10 focus:ring-slate-400 shadow-depth-1;
+  }
+
+  .trading-button-ghost {
+    @apply trading-button bg-transparent border border-slate-600 text-slate-300 hover:text-white hover:border-blue-500 hover:bg-blue-500/10 focus:ring-blue-500;
+  }
+  
+  .trading-input {
+    @apply glass rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500/50 transition-all duration-300 border-slate-600/50;
+  }
+
+  .trading-input:focus {
+    @apply shadow-glow-primary;
+    transform: translateY(-1px);
+  }
+  
+  .trading-select {
+    @apply trading-input appearance-none bg-no-repeat bg-right pr-12 cursor-pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23cbd5e1' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  }
+  
+  /* Enhanced Chart Styles */
+  .chart-container {
+    @apply glass-card border-slate-700/30 relative;
+  }
+
+  .chart-container::after {
+    content: '';
+    @apply absolute inset-0 rounded-2xl pointer-events-none;
+    background: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.05) 100%);
+  }
+  
+  /* Enhanced Status Indicators */
+  .status-indicator {
+    @apply inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm;
+  }
+  
+  .status-success {
+    @apply status-indicator bg-green-500/20 text-green-300 border border-green-500/30;
+  }
+  
+  .status-danger {
+    @apply status-indicator bg-red-500/20 text-red-300 border border-red-500/30;
+  }
+  
+  .status-warning {
+    @apply status-indicator bg-yellow-500/20 text-yellow-300 border border-yellow-500/30;
+  }
+  
+  .status-info {
+    @apply status-indicator bg-blue-500/20 text-blue-300 border border-blue-500/30;
+  }
+
+  /* Pulse animations for live data */
+  .live-indicator {
+    @apply relative;
+  }
+
+  .live-indicator::before {
+    content: '';
+    @apply absolute -inset-1 rounded-full bg-green-500 opacity-75 animate-ping;
+  }
+
+  /* Enhanced Trading Specific Styles */
+  .price-up {
+    @apply text-green-400 font-semibold;
+  }
+  
+  .price-down {
+    @apply text-red-400 font-semibold;
+  }
+  
+  .price-neutral {
+    @apply text-slate-300 font-medium;
+  }
+  
+  .signal-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm shadow-depth-1;
+  }
+  
+  .signal-buy {
+    @apply signal-badge bg-green-500/20 text-green-300 border border-green-500/40;
+  }
+  
+  .signal-sell {
+    @apply signal-badge bg-red-500/20 text-red-300 border border-red-500/40;
+  }
+  
+  .signal-hold {
+    @apply signal-badge bg-yellow-500/20 text-yellow-300 border border-yellow-500/40;
+  }
+
+  /* Navigation enhancements */
+  .nav-item {
+    @apply relative flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300;
+  }
+
+  .nav-item-active {
+    @apply nav-item glass text-white shadow-depth-2;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(29, 78, 216, 0.1) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+
+  .nav-item-inactive {
+    @apply nav-item text-slate-300 hover:text-white hover:bg-white/10;
+  }
+
+  /* Loading states */
+  .skeleton {
+    @apply bg-slate-700/50 animate-pulse rounded;
+  }
+
+  .shimmer {
+    @apply relative overflow-hidden;
+  }
+
+  .shimmer::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 2s infinite;
+  }
+
+  /* Notification styles */
+  .notification {
+    @apply glass-card p-4 border-l-4 shadow-depth-3;
+  }
+
+  .notification-success {
+    @apply notification border-l-green-500 bg-green-500/10;
+  }
+
+  .notification-error {
+    @apply notification border-l-red-500 bg-red-500/10;
+  }
+
+  .notification-warning {
+    @apply notification border-l-yellow-500 bg-yellow-500/10;
+  }
+
+  .notification-info {
+    @apply notification border-l-blue-500 bg-blue-500/10;
+  }
+
+  /* Responsive grid improvements */
+  .grid-responsive {
+    @apply grid gap-6;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  /* Floating action button */
+  .fab {
+    @apply fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-depth-4 flex items-center justify-center transition-all duration-300 hover:scale-110 z-50;
+    background: var(--gradient-primary);
+  }
+
+  .fab:hover {
+    @apply shadow-glow-primary;
+  }
+}

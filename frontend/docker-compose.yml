@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  tradeloop-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: tradeloop-frontend:latest
+    container_name: tradeloop-frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      # Optional: Mount SSL certificates if you have them
+      # - ./ssl:/etc/nginx/ssl:ro
+      # Optional: Mount nginx logs to host
+      - ./logs:/var/log/nginx
+    networks:
+      - tradeloop-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tradeloop-frontend.rule=Host(`localhost`)"
+      - "traefik.http.routers.tradeloop-frontend.entrypoints=web"
+
+  # Optional: Add a simple backend container for development/testing
+  # tradeloop-backend:
+  #   image: node:18-alpine
+  #   container_name: tradeloop-backend
+  #   working_dir: /app
+  #   command: ["node", "server.js"]
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - tradeloop-network
+  #   restart: unless-stopped
+
+networks:
+  tradeloop-network:
+    driver: bridge
+
+volumes:
+  nginx-logs:
+    driver: local

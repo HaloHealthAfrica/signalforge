@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: tradeloop-postgres
+    environment:
+      POSTGRES_DB: tradeloop
+      POSTGRES_USER: tradeloop
+      POSTGRES_PASSWORD: tradeloop123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./prisma/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tradeloop -d tradeloop"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  tradeloop:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tradeloop-app
+    environment:
+      DATABASE_URL: postgresql://tradeloop:tradeloop123@postgres:5432/tradeloop
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tradeloop-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - tradeloop
+    environment:
+      - VITE_API_URL=http://localhost:3000
+
+  # Optional: Redis for caching (uncomment if needed)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: tradeloop-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+
+volumes:
+  postgres_data:
+  # redis_data:
