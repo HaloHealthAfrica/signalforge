@@ -1,6 +1,7 @@
 [build]
   publish = "dist"
-  command = "npm run build"
+  command = "npm ci && npm run build"
+  base = "frontend"
   
 [[redirects]]
   from = "/*"
@@ -9,4 +10,6 @@
 
 [build.environment]
   VITE_API_URL = "https://tradeloop-api.onrender.com"
+  VITE_APP_TITLE = "TradeLoop"
+  VITE_ENVIRONMENT = "production"
   NODE_VERSION = "18"
