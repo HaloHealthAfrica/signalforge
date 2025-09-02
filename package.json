@@ -19,8 +19,7 @@
     "ui:preview": "cd frontend && npm run preview",
     "render:build": "npm ci && npm run build && npx prisma generate",
     "render:deploy": "npx prisma migrate deploy",
-    "build:render": "tsc && npx prisma generate",
-    "postinstall": "npx prisma generate"
+    "build:render": "tsc && npx prisma generate"
   },
   "keywords": ["trading", "ai", "signals", "backtesting", "portfolio"],
   "author": "TradeLoop Team",

@@ -13,18 +13,18 @@ RUN apk add --no-cache \
     openssl-dev \
     && rm -rf /var/cache/apk/*
 
-# Copy package files
+# Copy package files and prisma schema (needed for postinstall)
 COPY package*.json ./
 COPY tsconfig.json ./
+COPY prisma/ ./prisma/
 
 # Install dependencies including dev dependencies for build
 RUN npm ci && npm cache clean --force
 
 # Copy source code (excluding node_modules and other unnecessary files)
 COPY src/ ./src/
-COPY prisma/ ./prisma/
 
-# Generate Prisma client
+# Generate Prisma client (explicit generation after copying source)
 RUN npx prisma generate
 
 # Build the application
