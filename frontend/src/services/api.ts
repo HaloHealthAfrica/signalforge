@@ -3,9 +3,14 @@ import axios from 'axios';
 // API base configuration
 const API_BASE_URL = import.meta.env.VITE_API_URL || (
   import.meta.env.PROD 
-    ? 'https://api.tradeloop.app' 
+    ? 'https://tradeloop-api.onrender.com' 
     : 'http://localhost:3000'
 );
+
+// Debug API URL in production
+if (import.meta.env.PROD) {
+  console.log('🌐 API Base URL:', API_BASE_URL);
+}
 
 const api = axios.create({
   baseURL: API_BASE_URL,

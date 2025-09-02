@@ -47,6 +47,13 @@ const TradeLoopApp = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(true);
 
+  // Debug info on mount
+  useEffect(() => {
+    console.log('🚀 TradeLoop App Loading...');
+    console.log('📍 Environment:', import.meta.env.MODE);
+    console.log('🌐 API URL:', import.meta.env.VITE_API_URL);
+  }, []);
+
   // API data hooks
   const { data: marketData, loading: marketLoading, error: marketError } = usePolling<MarketData>(
     marketAPI.getOverview,
