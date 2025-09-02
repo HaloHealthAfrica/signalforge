@@ -32,13 +32,11 @@ services:
     name: tradeloop-frontend
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: ./frontend/dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
     envVars:
       - key: VITE_API_URL
         value: https://tradeloop-api.onrender.com
+      - key: NODE_VERSION
+        value: "18"
 
   # Background Service for Trading Operations (Optional - commented out for now)
   # - type: worker

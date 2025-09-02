@@ -6,10 +6,6 @@ services:
     name: tradeloop-frontend
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: ./frontend/dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
     envVars:
       - key: VITE_API_URL
         value: https://tradeloop-api.onrender.com
@@ -17,3 +13,5 @@ services:
         value: TradeLoop
       - key: VITE_ENVIRONMENT  
         value: production
+      - key: NODE_VERSION
+        value: "18"
