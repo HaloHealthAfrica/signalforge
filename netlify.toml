@@ -9,7 +9,7 @@
 
 [build.environment]
   VITE_API_URL = "https://tradeloop-api.onrender.com"
-  VITE_APP_TITLE = "TradeLoop" 
+  VITE_APP_TITLE = "TradeLoop"
   VITE_ENVIRONMENT = "production"
   NODE_VERSION = "18"
 
