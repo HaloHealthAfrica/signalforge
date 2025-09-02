@@ -1,0 +1,36 @@
+# Backend Only Deployment for Render
+# Use this if the full stack deployment fails
+
+databases:
+  - name: tradeloop-db
+    databaseName: tradeloop
+    user: tradeloop
+    plan: free
+
+services:
+  # Backend API Service Only
+  - type: web
+    name: tradeloop-api
+    env: node
+    plan: free
+    buildCommand: |
+      echo "Starting build process..."
+      npm ci --verbose
+      echo "Running TypeScript compilation..."
+      npx tsc
+      echo "Generating Prisma client..."
+      npx prisma generate
+      echo "Build completed successfully"
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tradeloop-db
+          property: connectionString
+      - key: CORS_ORIGIN
+        value: "*"
